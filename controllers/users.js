@@ -2,7 +2,7 @@ const User = require("../models/user");
 const { BAD_REQUEST, NOT_FOUND } = require("../utils/errors");
 
 const getUsers = (req, res, next) => {
-  User.find({})
+  return User.find({})
     .then((users) => res.send(users))
     .catch(next);
 };
@@ -10,7 +10,7 @@ const getUsers = (req, res, next) => {
 const createUser = (req, res, next) => {
   const { name, avatar } = req.body;
 
-  User.create({ name, avatar })
+  return User.create({ name, avatar })
     .then((user) => res.status(201).send(user))
     .catch((error) => {
       if (error.name === "ValidationError") {
@@ -18,13 +18,13 @@ const createUser = (req, res, next) => {
         err.statusCode = BAD_REQUEST;
         return next(err);
       }
-      next(error);
+      return next(error);
     });
 };
 
 const getUser = (req, res, next) => {
   const { userId } = req.params;
-  User.findById(userId)
+  return User.findById(userId)
     .orFail(() => {
       const err = new Error("User not found");
       err.statusCode = NOT_FOUND;
@@ -37,7 +37,7 @@ const getUser = (req, res, next) => {
         err.statusCode = BAD_REQUEST;
         return next(err);
       }
-      next(error);
+      return next(error);
     });
 };
 

@@ -1,6 +1,6 @@
 const { SERVER_ERROR } = require("../utils/errors");
 
-module.exports = (err, req, res, _next) => {
+module.exports = (err, req, res) => {
   const { statusCode = SERVER_ERROR, message } = err;
 
   console.error(`Error ${err.name || "UnknownError"} - ${err.message}`);

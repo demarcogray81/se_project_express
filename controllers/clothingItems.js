@@ -5,7 +5,7 @@ const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
 
-  ClothingItem.create({ name, weather, imageUrl, owner })
+  return ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => res.status(201).send({ data: item }))
     .catch((error) => {
       if (error.name === "ValidationError") {
@@ -13,12 +13,12 @@ const createItem = (req, res, next) => {
         err.statusCode = BAD_REQUEST;
         return next(err);
       }
-      next(error);
+      return next(error);
     });
 };
 
 const getItems = (req, res, next) => {
-  ClothingItem.find({})
+  return ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch(next);
 };
@@ -26,7 +26,7 @@ const getItems = (req, res, next) => {
 const deleteItems = (req, res, next) => {
   const { itemId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  return ClothingItem.findByIdAndDelete(itemId)
     .orFail(() => {
       const err = new Error("Item not found");
       err.statusCode = NOT_FOUND;
@@ -39,12 +39,12 @@ const deleteItems = (req, res, next) => {
         err.statusCode = BAD_REQUEST;
         return next(err);
       }
-      next(error);
+      return next(error);
     });
 };
 
 const likeItem = (req, res, next) => {
-  ClothingItem.findByIdAndUpdate(
+  return ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
@@ -61,12 +61,12 @@ const likeItem = (req, res, next) => {
         err.statusCode = BAD_REQUEST;
         return next(err);
       }
-      next(error);
+      return next(error);
     });
 };
 
 const unlikeItem = (req, res, next) => {
-  ClothingItem.findByIdAndUpdate(
+  return ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
     { new: true }
@@ -83,7 +83,7 @@ const unlikeItem = (req, res, next) => {
         err.statusCode = BAD_REQUEST;
         return next(err);
       }
-      next(error);
+      return next(error);
     });
 };
 
