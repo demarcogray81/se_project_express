@@ -12,11 +12,13 @@ const createUser = (req, res, next) => {
 
   User.create({ name, avatar })
     .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        const err = new Error(error.message);
         err.statusCode = BAD_REQUEST;
+        return next(err);
       }
-      next(err);
+      next(error);
     });
 };
 
@@ -29,12 +31,13 @@ const getUser = (req, res, next) => {
       throw err;
     })
     .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === "CastError") {
+    .catch((error) => {
+      if (error.name === "CastError") {
+        const err = new Error("Invalid user ID format");
         err.statusCode = BAD_REQUEST;
-        err.message = "Invalid user ID format";
+        return next(err);
       }
-      next(err);
+      next(error);
     });
 };
 

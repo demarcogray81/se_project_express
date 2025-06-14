@@ -7,11 +7,13 @@ const createItem = (req, res, next) => {
 
   ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => res.status(201).send({ data: item }))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        const err = new Error(error.message);
         err.statusCode = BAD_REQUEST;
+        return next(err);
       }
-      next(err);
+      next(error);
     });
 };
 
@@ -31,12 +33,13 @@ const deleteItems = (req, res, next) => {
       throw err;
     })
     .then((item) => res.status(200).send({ data: item }))
-    .catch((err) => {
-      if (err.name === "CastError") {
+    .catch((error) => {
+      if (error.name === "CastError") {
+        const err = new Error("Invalid item ID format");
         err.statusCode = BAD_REQUEST;
-        err.message = "Invalid item ID format";
+        return next(err);
       }
-      next(err);
+      next(error);
     });
 };
 
@@ -52,12 +55,13 @@ const likeItem = (req, res, next) => {
       throw err;
     })
     .then((item) => res.send({ data: item }))
-    .catch((err) => {
-      if (err.name === "CastError") {
+    .catch((error) => {
+      if (error.name === "CastError") {
+        const err = new Error("Invalid item ID format");
         err.statusCode = BAD_REQUEST;
-        err.message = "Invalid item ID format";
+        return next(err);
       }
-      next(err);
+      next(error);
     });
 };
 
@@ -73,12 +77,13 @@ const unlikeItem = (req, res, next) => {
       throw err;
     })
     .then((item) => res.send({ data: item }))
-    .catch((err) => {
-      if (err.name === "CastError") {
+    .catch((error) => {
+      if (error.name === "CastError") {
+        const err = new Error("Invalid item ID format");
         err.statusCode = BAD_REQUEST;
-        err.message = "Invalid item ID format";
+        return next(err);
       }
-      next(err);
+      next(error);
     });
 };
 
