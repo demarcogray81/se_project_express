@@ -1,11 +1,10 @@
 const User = require("../models/user");
 const { BAD_REQUEST, NOT_FOUND } = require("../utils/errors");
 
-const getUsers = (req, res, next) => {
-  return User.find({})
+const getUsers = (req, res, next) =>
+  User.find({})
     .then((users) => res.send(users))
     .catch(next);
-};
 
 const createUser = (req, res, next) => {
   const { name, avatar } = req.body;
@@ -22,9 +21,8 @@ const createUser = (req, res, next) => {
     });
 };
 
-const getUser = (req, res, next) => {
-  const { userId } = req.params;
-  return User.findById(userId)
+const getUser = (req, res, next) =>
+  User.findById(req.params.userId)
     .orFail(() => {
       const err = new Error("User not found");
       err.statusCode = NOT_FOUND;
@@ -39,6 +37,5 @@ const getUser = (req, res, next) => {
       }
       return next(error);
     });
-};
 
 module.exports = { getUsers, createUser, getUser };
