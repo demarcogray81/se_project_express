@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
 const { BAD_REQUEST, NOT_FOUND } = require("../utils/errors");
 
@@ -23,19 +24,23 @@ const getItems = (req, res, next) =>
     .catch(next);
 
 const deleteItems = (req, res, next) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.itemId)) {
-    const err = new Error("Invalid item ID format");
-    err.statusCode = BAD_REQUEST;
-    return next(err);
-  }
-  ClothingItem.findByIdAndDelete(req.params.itemId)
+  const { itemId } = req.params;
+
+  return ClothingItem.findByIdAndDelete(itemId)
     .orFail(() => {
       const err = new Error("Item not found");
       err.statusCode = NOT_FOUND;
       throw err;
     })
     .then((item) => res.status(200).send({ data: item }))
-    .catch(next);
+    .catch((error) => {
+      if (error.name === "CastError") {
+        const err = new Error("Invalid item ID format");
+        err.statusCode = BAD_REQUEST;
+        return next(err);
+      }
+      return next(error);
+    });
 };
 
 const likeItem = (req, res, next) =>

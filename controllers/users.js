@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const { BAD_REQUEST, NOT_FOUND } = require("../utils/errors");
 
@@ -21,12 +22,7 @@ const createUser = (req, res, next) => {
     });
 };
 
-const getUser = (req, res, next) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
-    const err = new Error("Invalid user ID format");
-    err.statusCode = BAD_REQUEST;
-    return next(err);
-  }
+const getUser = (req, res, next) =>
   User.findById(req.params.userId)
     .orFail(() => {
       const err = new Error("User not found");
@@ -34,7 +30,13 @@ const getUser = (req, res, next) => {
       throw err;
     })
     .then((user) => res.status(200).send(user))
-    .catch(next);
-};
+    .catch((error) => {
+      if (error.name === "CastError") {
+        const err = new Error("Invalid user ID format");
+        err.statusCode = BAD_REQUEST;
+        return next(err);
+      }
+      return next(error);
+    });
 
 module.exports = { getUsers, createUser, getUser };
