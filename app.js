@@ -25,3 +25,6 @@ mongoose
     });
   })
   .catch(console.error);
+
+const errorHandler = require("./middlewares/errorHandler");
+app.use(errorHandler);
