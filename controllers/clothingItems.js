@@ -23,23 +23,19 @@ const getItems = (req, res, next) =>
     .catch(next);
 
 const deleteItems = (req, res, next) => {
-  const { itemId } = req.params;
-
-  return ClothingItem.findByIdAndDelete(itemId)
+  if (!mongoose.Types.ObjectId.isValid(req.params.itemId)) {
+    const err = new Error("Invalid item ID format");
+    err.statusCode = BAD_REQUEST;
+    return next(err);
+  }
+  ClothingItem.findByIdAndDelete(req.params.itemId)
     .orFail(() => {
       const err = new Error("Item not found");
       err.statusCode = NOT_FOUND;
       throw err;
     })
     .then((item) => res.status(200).send({ data: item }))
-    .catch((error) => {
-      if (error.name === "CastError") {
-        const err = new Error("Invalid item ID format");
-        err.statusCode = BAD_REQUEST;
-        return next(err);
-      }
-      return next(error);
-    });
+    .catch(next);
 };
 
 const likeItem = (req, res, next) =>
