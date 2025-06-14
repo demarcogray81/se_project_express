@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const routes = require("./routes");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -25,5 +26,4 @@ mongoose
   })
   .catch(console.error);
 
-const errorHandler = require("./middlewares/errorHandler");
 app.use(errorHandler);
