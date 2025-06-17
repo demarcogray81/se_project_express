@@ -17,7 +17,7 @@ app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
     return res.status(400).json({ message: "Invalid JSON format" });
   }
-  next(err);
+  return next(err);
 });
 
 app.use(routes);
@@ -27,9 +27,9 @@ app.use(errorHandler);
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
-    console.log("Connected to DB");
+    // console.log("Connected to DB");
     app.listen(PORT, () => {
-      console.log(`Listening on port ${PORT}`);
+      // console.log(`Listening on port ${PORT}`);
     });
   })
-  .catch(console.error);
+  .catch(() => {});

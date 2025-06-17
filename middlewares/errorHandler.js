@@ -1,8 +1,7 @@
+// middlewares/errorHandler.js
 const { SERVER_ERROR } = require("../utils/errors");
 
-module.exports = (err, req, res, next) => {
-  void next;
-
+module.exports = (err, req, res, _next) => {
   const { statusCode = SERVER_ERROR, message } = err;
 
   res.status(statusCode).json({
