@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "description": "Updates to existing Projrct",
   "main": "app.js",
-"scripts": {
-  "start": "node app.js",
-  "dev": "nodemon app.js",
-  "lint": "eslint .",
-  "test": "echo \"No test specified. Linting only.\" && exit 0"
-},
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "eslint .",
+    "test": "echo \"No test specified. Linting only.\" && exit 0"
+  },
   "author": "DeMarco Gray",
   "license": "ISC",
   "dependencies": {
