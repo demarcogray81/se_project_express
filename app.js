@@ -13,13 +13,6 @@ app.use((req, res, next) => {
   return next();
 });
 
-app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
-    return res.status(400).json({ message: "Invalid JSON format" });
-  }
-  return next(err);
-});
-
 app.use(routes);
 
 app.use(errorHandler);
