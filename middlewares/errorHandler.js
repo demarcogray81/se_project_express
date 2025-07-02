@@ -1,4 +1,3 @@
-// middlewares/errorHandler.js
 const { SERVER_ERROR } = require("../utils/errors");
 
 module.exports = (err, req, res, _next) => {
