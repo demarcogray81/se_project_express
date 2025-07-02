@@ -117,7 +117,11 @@ const updateUser = (req, res, next) => {
       err.statusCode = NOT_FOUND;
       throw err;
     })
-    .then((updatedUser) => res.send(updatedUser))
+    .then((updatedUser) => {
+      const userWithoutPassword = updatedUser.toObject();
+      delete userWithoutPassword.password;
+      res.status(200).send(userWithoutPassword);
+    })
     .catch((error) => {
       if (error.name === "ValidationError") {
         const validationError = new Error(error.message);

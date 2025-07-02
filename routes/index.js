@@ -11,16 +11,6 @@ const router = express.Router();
 router.post("/signin", login);
 router.post("/signup", createUser);
 
-if (process.env.NODE_ENV === "test") {
-  router.use((req, res, next) => {
-    console.log("🧪 Injecting test user");
-    req.user = {
-      _id: "5d8b8592978f8bd833ca8133",
-    };
-    next();
-  });
-}
-
 router.use(auth);
 
 router.use("/items", itemRouter);
