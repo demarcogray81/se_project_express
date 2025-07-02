@@ -6,7 +6,7 @@ const createItem = (req, res, next) => {
   const owner = req.user._id;
 
   ClothingItem.create({ name, weather, imageUrl, owner })
-    .then((item) => res.status(201).send(item))
+    .then((item) => res.status(200).send(item))
     .catch((error) => {
       if (error.name === "ValidationError") {
         const err = new Error("Invalid item data");
@@ -31,7 +31,7 @@ const deleteItems = (req, res, next) => {
       throw err;
     })
     .then((item) => {
-      if (item.owner.toString() !== req.user._id) {
+      if (item.owner.toString() !== req.user._id.toString()) {
         const err = new Error("You are not allowed to delete this item");
         err.statusCode = FORBIDDEN;
         throw err;
