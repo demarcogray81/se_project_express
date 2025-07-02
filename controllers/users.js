@@ -1,14 +1,16 @@
+const jwt = require("jsonwebtoken");
+const validator = require("validator");
 const bcrypt = require("bcryptjs");
+
 const User = require("../models/user");
+
 const {
   BAD_REQUEST,
   CONFLICT,
   UNAUTHORIZED,
   NOT_FOUND,
 } = require("../utils/errors");
-const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const validator = require("validator");
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -59,15 +61,17 @@ const createUser = (req, res, next) => {
     })
     .catch((error) => {
       if (error.code === 11000) {
-        const err = new Error("A user with that email already exists.");
-        err.statusCode = CONFLICT;
-        return next(err);
+        const conflictError = new Error(
+          "A user with that email already exists."
+        );
+        conflictError.statusCode = CONFLICT;
+        return next(conflictError);
       }
 
       if (error.name === "ValidationError") {
-        const err = new Error(error.message);
-        err.statusCode = BAD_REQUEST;
-        return next(err);
+        const validationError = new Error(error.message);
+        validationError.statusCode = BAD_REQUEST;
+        return next(validationError);
       }
 
       return next(error);
@@ -85,9 +89,9 @@ const getCurrentUser = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((error) => {
       if (error.name === "CastError") {
-        const err = new Error("Invalid user ID format");
-        err.statusCode = BAD_REQUEST;
-        return next(err);
+        const castError = new Error("Invalid user ID format");
+        castError.statusCode = BAD_REQUEST;
+        return next(castError);
       }
       return next(error);
     });
@@ -110,11 +114,13 @@ const updateUser = (req, res, next) => {
       throw err;
     })
     .then((updatedUser) => res.send(updatedUser))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        err.statusCode = BAD_REQUEST;
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        const validationError = new Error(error.message);
+        validationError.statusCode = BAD_REQUEST;
+        return next(validationError);
       }
-      next(err);
+      return next(error);
     });
 };
 
