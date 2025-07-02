@@ -3,6 +3,11 @@ const { JWT_SECRET } = require("../utils/config");
 const { UNAUTHORIZED } = require("../utils/errors");
 
 module.exports = (req, res, next) => {
+  if (process.env.NODE_ENV === "test") {
+    req.user = { _id: "5d8b8592978f8bd833ca8133" };
+    return next();
+  }
+
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {

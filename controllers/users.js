@@ -86,7 +86,11 @@ const getCurrentUser = (req, res, next) => {
       err.statusCode = NOT_FOUND;
       throw err;
     })
-    .then((user) => res.status(200).send(user))
+    .then((user) => {
+      const userWithoutPassword = user.toObject();
+      delete userWithoutPassword.password;
+      res.status(200).send(userWithoutPassword);
+    })
     .catch((error) => {
       if (error.name === "CastError") {
         const castError = new Error("Invalid user ID format");
