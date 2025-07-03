@@ -39,7 +39,22 @@ const deleteItems = (req, res, next) => {
 
       return item.deleteOne();
     })
-    .then((deletedItem) => res.status(200).send({ data: deletedItem }))
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id.toString()) {
+        const err = new Error("You are not allowed to delete this item");
+        err.statusCode = FORBIDDEN;
+        throw err;
+      }
+
+      const itemToDelete = item.toObject();
+      return item.deleteOne().then(() =>
+        res.status(200).send({
+          message: "Item successfully deleted",
+          data: itemToDelete,
+        })
+      );
+    })
+
     .catch((error) => {
       if (error.name === "CastError") {
         const err = new Error("Invalid item ID format");

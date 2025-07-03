@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Password is required."],
-    minlength: [6, "Password must be at least 6 characters long."],
     select: false,
   },
   avatar: {
@@ -36,7 +35,10 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
   return this.findOne({ email })
     .select("+password")
     .then((user) => {
@@ -44,13 +46,15 @@ userSchema.statics.findUserByCredentials = function (email, password) {
         return Promise.reject(new Error("Incorrect email or password"));
       }
 
-      return bcrypt.compare(password, user.password).then((matched) => {
-        if (!matched) {
-          return Promise.reject(new Error("Incorrect email or password"));
-        }
+      return bcrypt
+        .compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error("Incorrect email or password"));
+          }
 
-        return user;
-      });
+          return user;
+        });
     });
 };
 

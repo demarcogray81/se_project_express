@@ -34,17 +34,27 @@ const login = (req, res, next) => {
       });
       res.send({ token });
     })
-    .catch(() => {
-      const error = new Error("Incorrect email or password");
-      error.statusCode = UNAUTHORIZED;
-      next(error);
+    .catch((err) => {
+      const error = new Error(err.message);
+
+      if (err.message === "Incorrect email or password") {
+        error.statusCode = UNAUTHORIZED;
+      }
+
+      return next(error);
     });
 };
 
 const createUser = (req, res, next) => {
   const { name, email, password, avatar } = req.body;
 
-  bcrypt
+  if (!password || password.length < 8) {
+    const error = new Error("Password must be at least 8 characters long.");
+    error.statusCode = BAD_REQUEST;
+    return next(error);
+  }
+
+  return bcrypt
     .hash(password, 10)
     .then((hashedPassword) =>
       User.create({
@@ -57,7 +67,7 @@ const createUser = (req, res, next) => {
     .then((user) => {
       const userWithoutPassword = user.toObject();
       delete userWithoutPassword.password;
-      res.status(201).send(userWithoutPassword);
+      return res.status(201).send(userWithoutPassword);
     })
     .catch((error) => {
       if (error.code === 11000) {
@@ -104,7 +114,7 @@ const getCurrentUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
 
-  User.findByIdAndUpdate(
+  return User.findByIdAndUpdate(
     req.user._id,
     { name, avatar },
     {
@@ -115,12 +125,13 @@ const updateUser = (req, res, next) => {
     .orFail(() => {
       const err = new Error("User not found");
       err.statusCode = NOT_FOUND;
-      throw err;
+      return Promise.reject(err);
     })
+
     .then((updatedUser) => {
       const userWithoutPassword = updatedUser.toObject();
       delete userWithoutPassword.password;
-      res.status(200).send(userWithoutPassword);
+      return res.status(200).send(userWithoutPassword);
     })
     .catch((error) => {
       if (error.name === "ValidationError") {
