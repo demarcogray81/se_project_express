@@ -6,7 +6,7 @@ const createItem = (req, res, next) => {
   const owner = req.user._id;
 
   ClothingItem.create({ name, weather, imageUrl, owner })
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(201).send(item.toObject()))
     .catch((error) => {
       if (error.name === "ValidationError") {
         const err = new Error("Invalid item data");
