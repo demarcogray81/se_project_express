@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { ObjectId } = require("mongoose").Types;
 const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
-const { ObjectId } = require("mongoose").Types;
 
 const app = express();
 const { PORT = 3001 } = process.env;
