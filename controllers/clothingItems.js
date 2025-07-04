@@ -24,11 +24,11 @@ const getItems = (req, res, next) =>
 const deleteItems = (req, res, next) => {
   const { itemId } = req.params;
 
-  return ClothingItem.findById(itemId)
+  ClothingItem.findById(itemId)
     .orFail(() => {
       const err = new Error("Item not found");
       err.statusCode = NOT_FOUND;
-      throw err;
+      return Promise.reject(err);
     })
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
@@ -37,24 +37,14 @@ const deleteItems = (req, res, next) => {
         throw err;
       }
 
-      return item.deleteOne();
-    })
-    .then((item) => {
-      if (item.owner.toString() !== req.user._id.toString()) {
-        const err = new Error("You are not allowed to delete this item");
-        err.statusCode = FORBIDDEN;
-        throw err;
-      }
-
-      const itemToDelete = item.toObject();
-      return item.deleteOne().then(() =>
+      const deletedItemData = item.toObject();
+      return item.deleteOne().then(() => {
         res.status(200).send({
           message: "Item successfully deleted",
-          data: itemToDelete,
-        })
-      );
+          data: deletedItemData,
+        });
+      });
     })
-
     .catch((error) => {
       if (error.name === "CastError") {
         const err = new Error("Invalid item ID format");
@@ -64,6 +54,7 @@ const deleteItems = (req, res, next) => {
       return next(error);
     });
 };
+
 const likeItem = (req, res, next) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
