@@ -80,7 +80,7 @@ const unlikeItem = (req, res, next) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
-    { new: true }.
+    { new: true }
   )
     .orFail(() => {
       const err = new Error("Item not found");
