@@ -16,19 +16,14 @@ const createItem = (req, res, next) => {
       return next(error);
     });
 };
-const getItems = (req, res, next) =>
-  ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
-    .catch(next);
-
 const deleteItems = (req, res, next) => {
   const { itemId } = req.params;
 
-  ClothingItem.findById(itemId)
+  return ClothingItem.findById(itemId)
     .orFail(() => {
       const err = new Error("Item not found");
       err.statusCode = NOT_FOUND;
-      return Promise.reject(err);
+      throw err;
     })
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
