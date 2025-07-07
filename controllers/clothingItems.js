@@ -16,6 +16,12 @@ const createItem = (req, res, next) => {
       return next(error);
     });
 };
+
+const getItems = (req, res, next) =>
+  ClothingItem.find({})
+    .then((items) => res.status(200).send(items))
+    .catch(next);
+
 const deleteItems = (req, res, next) => {
   const { itemId } = req.params;
 
