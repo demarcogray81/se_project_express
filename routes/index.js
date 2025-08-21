@@ -13,8 +13,7 @@ router.post("/signup", createUser);
 
 router.use("/items", itemRouter);
 
-router.use(auth);
-router.use("/users", userRouter);
+router.use("/users", auth, userRouter);
 
 router.use((req, res) => {
   res.status(NOT_FOUND).json({ message: "Router not found" });
