@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const { errors } = require("celebrate"); // ⬅️ bring in celebrate errors
+const { errors } = require("celebrate");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
@@ -19,16 +19,12 @@ app.use(
 
 app.use(express.json());
 
-// Routes
 app.use(requestLogger);
 app.use(routes);
 
 app.use(errorLogger);
 
-// Celebrate validation errors (must come BEFORE centralized error handler)
 app.use(errors());
-
-// Centralized error handler (must be LAST)
 app.use(errorHandler);
 
 mongoose
