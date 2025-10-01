@@ -3,6 +3,11 @@
 This portion of the project of the project was done using back-end API's.
 The web application helps users figure out what clothing would be best depending on the weather using the exact temperature of the actual location.
 
+## Deployment Info
+
+- **Domain name**: https://www.wattawear.twilightparadox.com
+- **Frontend GitHub repo (public)**: https://github.com/demarcogray81/se_project_react
+
 ## Technologies & Tools
 
 - Node.js - Helps make the server side of code more modular.
