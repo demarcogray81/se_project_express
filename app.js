@@ -2,10 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const { errors } = require("celebrate");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001, CORS_ORIGIN = "http://localhost:3000" } = process.env;
@@ -18,9 +16,13 @@ app.use(
 );
 
 app.use(express.json());
-
-app.use(requestLogger);
 app.use(routes);
+
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
 
 app.use(errorLogger);
 
@@ -33,8 +35,9 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
+    // console.log("Connected to MongoDB");
     app.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
+      // console.log(`Server listening on port ${PORT}`);
     });
   })
   .catch((err) => {
