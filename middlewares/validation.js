@@ -17,16 +17,14 @@ module.exports.validateCardBody = celebrate({
       "string.min": 'The minimum length of the "name" field is 2',
       "string.max": 'The maximum length of the "name" field is 30',
       "string.empty": 'The "name" field must be filled in',
-      "any.required": 'The "name" field must be filled in',
     }),
-    imageUrl: Joi.string().required().custom(validateURL).messages({
-      "string.empty": 'The "imageUrl" field must be filled in',
-      "string.uri": 'The "imageUrl" field must be a valid url',
-      "any.required": 'The "imageUrl" field must be filled in',
+    imageUrl: Joi.string().required().custom(validateURL),
+    weather: Joi.string().valid("hot", "warm", "cold").required().messages({
+      "any.only": "Weather must be one of: hot, warm, cold",
+      "string.empty": 'The "weather" field must be filled in',
     }),
   }),
 });
-
 // 2) User signup body
 module.exports.validateSignupBody = celebrate({
   body: Joi.object().keys({

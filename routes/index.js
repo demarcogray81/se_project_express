@@ -1,22 +1,22 @@
 const express = require("express");
-const { NOT_FOUND } = require("../utils/errors");
-const { login, createUser } = require("../controllers/users");
-
+const authRouter = require("./auth");
 const userRouter = require("./users");
 const itemRouter = require("./clothingItems");
 const auth = require("../middlewares/auth");
+const NotFoundError = require("../errors/NotFoundError");
 
 const router = express.Router();
 
-router.post("/signin", login);
-router.post("/signup", createUser);
+// Mount auth routes first
+router.use(authRouter);
 
+// Public items routes
 router.use("/items", itemRouter);
 
+// Protected users routes
 router.use("/users", auth, userRouter);
 
-router.use((req, res) => {
-  res.status(NOT_FOUND).json({ message: "Router not found" });
-});
+// Catch-all -> centralized error handler
+router.use("*", (req, res, next) => next(new NotFoundError("Route not found")));
 
 module.exports = router;

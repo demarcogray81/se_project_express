@@ -1,8 +1,13 @@
-// errors/index.js
+const BadRequestError = require("./BadRequestError");
+const NotFoundError = require("./NotFoundError");
+const ForbiddenError = require("./ForbiddenError");
+const UnauthorizedError = require("./UnauthorizedError");
+const ConflictError = require("./ConflictError");
+
 module.exports = {
-  BadRequestError: require("./BadRequestError"),
-  UnauthorizedError: require("./UnauthorizedError"),
-  ForbiddenError: require("./ForbiddenError"),
-  NotFoundError: require("./NotFoundError"),
-  ConflictError: require("./ConflictError"),
+  BadRequestError,
+  NotFoundError,
+  ForbiddenError,
+  UnauthorizedError,
+  ConflictError,
 };
