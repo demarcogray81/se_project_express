@@ -4,7 +4,7 @@ const { validateUpdateUser } = require("../middlewares/validation");
 
 const router = express.Router();
 
-router.get("/users/me", getCurrentUser);
-router.patch("/users/me", validateUpdateUser, updateUser);
+router.get("/me", getCurrentUser);
+router.patch("/me", validateUpdateUser, updateUser);
 
 module.exports = router;

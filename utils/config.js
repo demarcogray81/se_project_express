@@ -1,5 +1,7 @@
-const { JWT_SECRET = "your-secret-key-goes-here" } = process.env; // Replace this with a .env variable later
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is missing in environment variables!");
+}
 
-module.exports = {
-  JWT_SECRET,
-};
+const { JWT_SECRET } = process.env;
+
+module.exports = { JWT_SECRET };

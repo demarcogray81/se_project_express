@@ -1,7 +1,6 @@
 module.exports = {
   env: { es2021: true, node: true },
   extends: ["eslint:recommended", "airbnb-base", "prettier"],
-  plugins: ["prettier"],
   overrides: [
     {
       files: ["*.eslintrc.{js,cjs}"],
@@ -15,7 +14,6 @@ module.exports = {
       "error",
       { argsIgnorePattern: "^_|^next$", varsIgnorePattern: "^_" },
     ],
-    "prettier/prettier": ["warn"],
     "no-console": "warn",
     // 'import/extensions': ['error', 'ignorePackages', { js: 'always' }],
   },
