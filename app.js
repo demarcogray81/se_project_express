@@ -8,17 +8,30 @@ const errorHandler = require("./middlewares/errorHandler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
-const { PORT = 3001, CORS_ORIGIN = "http://localhost:3000" } = process.env;
+const { PORT = 3001 } = process.env;
+
+const allowedOrigins = [
+  "https://wattawear.twilightparadox.com",
+  "https://www.wattawear.twilightparadox.com",
+];
+
+app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: CORS_ORIGIN,
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error("CORS: origin not allowed"));
+    },
     credentials: true,
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.use(express.json());
+app.options("*", cors());
 
+app.use(express.json());
 app.use(requestLogger);
 
 app.get("/crash-test", () => {
@@ -30,15 +43,15 @@ app.get("/crash-test", () => {
 app.use(routes);
 
 app.use(errorLogger);
-
 app.use(errors());
-
 app.use(errorHandler);
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
-    app.listen(PORT, () => {});
+    app.listen(PORT, () => {
+      console.log(`API listening on ${PORT}`);
+    });
   })
   .catch((err) => {
     console.error("MongoDB connection failed:", err);
