@@ -1,7 +1,9 @@
-if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET is missing in environment variables!");
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+if (NODE_ENV === "production" && !JWT_SECRET) {
+  throw new Error("JWT_SECRET is missing in production environment variables!");
 }
 
-const { JWT_SECRET } = process.env;
-
-module.exports = { JWT_SECRET };
+module.exports = {
+  JWT_SECRET: JWT_SECRET || "dev-secret-do-not-use-in-prod",
+};
